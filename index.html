@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITI CBT Exam MCQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            robot: {
+              primary: '#00f3ff',
+              secondary: '#7000ff',
+              dark: '#0a0a1a',
+              card: '#16162a',
+              accent: '#ff00c8'
+            }
+          },
+          animation: {
+            'select-pop': 'select-pop 0.3s ease-out forwards',
+          },
+          keyframes: {
+            'select-pop': {
+              '0%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.04)' },
+              '100%': { transform: 'scale(1.02)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0a0a1a;
+      color: #e2e8f0;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+    }
+    .neon-text {
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.7), 0 0 20px rgba(0, 243, 255, 0.5);
+    }
+    .neon-border {
+      box-shadow: 0 0 15px rgba(112, 0, 255, 0.3);
+      border: 1px solid rgba(112, 0, 255, 0.5);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0a0a1a;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #7000ff;
+      border-radius: 10px;
+    }
+    
+    @keyframes subtle-pulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+      50% { box-shadow: 0 0 25px rgba(0, 243, 255, 0.5); }
+    }
+    .animate-subtle-pulse {
+      animation: subtle-pulse 2s infinite ease-in-out;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
