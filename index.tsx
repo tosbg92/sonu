@@ -6,6 +6,7 @@ import AdminPanel from './components/AdminPanel';
 import QuizPlayer from './components/QuizPlayer';
 import ResultDashboard from './components/ResultDashboard';
 import { QuizSet, AppView, Question, Subject, Module, Block } from './types';
+import { EMPLOYABILITY_SKILLS_DATA } from './mcqData';
 
 // @ts-ignore
 window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -16,7 +17,7 @@ const SET_1_SAFETY: Question[] = [
   { id: "s1_q2", text: "Which color is typically used for safety signs indicating \"Caution\"? / \"सावधानी\" दर्शाने वाले सुरक्षा संकेतों के लिए सामान्यतः कौन सा रंग उपयोग किया जाता है?", options: ["Red / लाल", "Yellow / पीला", "Green / हरा", "Blue / नीला"], correctAnswerIndex: 1 },
   { id: "s1_q3", text: "What is the first step to take when noticing a fire in the workshop? / कार्यशाला में आग लगने पर सबसे पहले क्या करना चाहिए?", options: ["Attempt to extinguish it immediately / तुरंत बुझाने का प्रयास करना", "Raise the alarm and inform others / अलार्म बजाना और दूसरों को सूचित करना", "Evacuate silently / चुपचाप निकल जाना", "Ignore it if small / छोटी होने पर अनदेखा करना"], correctAnswerIndex: 1 },
   { id: "s1_q4", text: "What is the primary goal of the 5S methodology? / 5S पद्धति का मुख्य उद्देश्य क्या है?", options: ["Cleaning only / केवल सफाई करना", "Organizing the workplace efficiently / कार्यस्थल को कुशलतापूर्वक व्यवस्थित करना", "Hiring more workers / अधिक कर्मचारियों की भर्ती करना", "Reducing workers' salaries / कर्मचारियों का वेतन कम करना"], correctAnswerIndex: 1 },
-  { id: "s1_q5", text: "Which extinguisher should be used for a small electrical fire? / छोटी विद्युत आग के लिए कौन सा अग्निशामक उपयोग करना चाहिए?", options: ["Water / पानी", "Foam / फोम", "CO2 / सीओ2", "Sand / रेत"], correctAnswerIndex: 2 }
+  { id: "s1_q5", text: "Which extinguisher should be used for a small electrical fire? / छोटी विद्युत आग के लिए कौन सा अग्निशामक उपयोग करना चाहिए?", options: ["Water / पानी", "Foam / फोम", "CO2 / सीओ२", "Sand / रेत"], correctAnswerIndex: 2 }
 ];
 
 const SET_2_CUSTOMER: Question[] = [
@@ -48,7 +49,7 @@ const App = () => {
   }, [view]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('robotic_quiz_v7_db');
+    const saved = localStorage.getItem('robotic_quiz_v8_db');
     if (saved) {
       setSubjects(JSON.parse(saved));
       return;
@@ -58,74 +59,40 @@ const App = () => {
     const irdmtBlockTitles = [
       "Safe working practices & Housekeeping",
       "Customer needs & Product specifications",
-      "Industrial engineering drawing",
-      "Industrial Robots & Configuration",
-      "Robotic Cell Components",
-      "Installation check of Robot",
-      "Robot Power-on & Cell Health",
-      "Teach Pendant functions",
-      "Industrial Robot simulation software",
-      "Robotic Coordinate systems",
-      "Jogging using virtual programming",
-      "Add-on assembly for applications",
-      "Application-based robotic cells",
-      "Welding robot system & PLC",
-      "Interfacing Grippers in Robot",
-      "Importing & Exporting robotic programs",
-      "Program Reading & Execution",
-      "Operation of Industrial Robot",
-      "Safety procedure for Programmers",
-      "Need of robotic programming Simulation",
-      "Program creation via Simulation",
-      "Remote monitoring & Connectivity",
+      "Industrial engineering drawing", "Industrial Robots & Configuration", "Robotic Cell Components", "Installation check of Robot",
+      "Robot Power-on & Cell Health", "Teach Pendant functions", "Industrial Robot simulation software", "Robotic Coordinate systems",
+      "Jogging using virtual programming", "Add-on assembly for applications", "Application-based robotic cells", "Welding robot system & PLC",
+      "Interfacing Grippers in Robot", "Importing & Exporting robotic programs", "Program Reading & Execution", "Operation of Industrial Robot",
+      "Safety procedure for Programmers", "Need of robotic programming Simulation", "Program creation via Simulation", "Remote monitoring & Connectivity",
       "Preventive Maintenance & Troubleshooting"
     ];
 
     const irdmtBlocks: Block[] = irdmtBlockTitles.map((title, i) => ({
-      id: `irdmt-b-${i+1}`,
-      title,
-      sets: [
-        {
-          id: `irdmt-s-${i+1}-1`,
-          title: "Set 1",
-          description: `Diagnostic for ${title}`,
+      id: `irdmt-b-${i+1}`, title,
+      sets: [{
+          id: `irdmt-s-${i+1}-1`, title: "Set 1", description: `Diagnostic for ${title}`,
           questions: i === 0 ? SET_1_SAFETY : i === 1 ? SET_2_CUSTOMER : i === 2 ? SET_3_DRAWING : [],
-          createdAt: Date.now(),
-          isPlaceholder: i > 2
-        }
-      ]
+          createdAt: Date.now(), isPlaceholder: i > 2
+      }]
     }));
 
-    // --- Standard Employability Skill Block Titles (12 Blocks) ---
-    const esBlockTitles = [
-      "Introduction to Employability Skills",
-      "Constitutional values - Citizenship",
-      "Becoming a Professional in 21st Century",
-      "Basic English Skills",
-      "Career Development & Goal Setting",
-      "Communication Skills",
-      "Diversity & Inclusion",
-      "Financial and Legal Literacy",
-      "Essential Digital Skills",
-      "Entrepreneurship",
-      "Customer Service",
-      "Getting Ready for Apprenticeship & Jobs"
-    ];
+    // --- Standard Employability Skill Block Titles & Questions ---
+    const esBlocks: Block[] = EMPLOYABILITY_SKILLS_DATA.map((blockData, i) => {
+      const sets = (blockData.sets || [{ title: 'Set 1', questions: blockData.questions || [] }]).map((setData, j) => ({
+        id: `es-s-${i+1}-${j+1}`,
+        title: setData.title,
+        description: `Practice for ${blockData.title}`,
+        questions: setData.questions,
+        createdAt: Date.now(),
+        isPlaceholder: setData.questions.length === 0
+      }));
 
-    const esBlocks: Block[] = esBlockTitles.map((title, i) => ({
-      id: `es-b-${i+1}`,
-      title,
-      sets: [
-        {
-          id: `es-s-${i+1}-1`,
-          title: "Set 1",
-          description: `Practice for ${title}`,
-          questions: [],
-          createdAt: Date.now(),
-          isPlaceholder: true
-        }
-      ]
-    }));
+      return {
+        id: `es-b-${i+1}`,
+        title: blockData.title,
+        sets: sets
+      };
+    });
 
     const initialSubjects: Subject[] = [
       { id: 'irdmt', name: 'IRDMT', icon: '🤖', modules: [{ id: 'm1', name: 'Learning Outcome', blocks: irdmtBlocks }] },
@@ -137,7 +104,7 @@ const App = () => {
 
   const persistData = (data: Subject[]) => {
     setSubjects(data);
-    localStorage.setItem('robotic_quiz_v7_db', JSON.stringify(data));
+    localStorage.setItem('robotic_quiz_v8_db', JSON.stringify(data));
   };
 
   const resetToHome = () => {
@@ -151,9 +118,7 @@ const App = () => {
 
   const handleAddSubject = (name: string, icon: string) => {
     const newSubject: Subject = {
-      id: `sub-${Date.now()}`,
-      name,
-      icon,
+      id: `sub-${Date.now()}`, name, icon,
       modules: [{ id: `mod-${Date.now()}`, name: 'Learning Outcome', blocks: [] }]
     };
     persistData([...subjects, newSubject]);
