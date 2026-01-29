@@ -7,30 +7,10 @@ import QuizPlayer from './components/QuizPlayer';
 import ResultDashboard from './components/ResultDashboard';
 import { QuizSet, AppView, Question, Subject, Module, Block } from './types';
 import { EMPLOYABILITY_SKILLS_DATA } from './mcqData';
+import { IRDMT_FULL_DATA } from './irdmtData';
 
 // @ts-ignore
 window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-// --- Pre-defined IRDMT Question Blocks ---
-const SET_1_SAFETY: Question[] = [
-  { id: "s1_q1", text: "What is the primary purpose of using Personal Protective Equipment (PPE) in the workplace? / कार्यस्थल पर व्यक्तिगत सुरक्षा उपकरण (PPE) का मुख्य उद्देश्य क्या है?", options: ["To increase work speed / कार्य गति बढ़ाने के लिए", "To ensure personal safety / व्यक्तिगत सुरक्षा सुनिश्चित करने के लिए", "To reduce costs / लागत कम करने के लिए", "To decorate the workplace / कार्यस्थल को सजाने के लिए"], correctAnswerIndex: 1 },
-  { id: "s1_q2", text: "Which color is typically used for safety signs indicating \"Caution\"? / \"सावधानी\" दर्शाने वाले सुरक्षा संकेतों के लिए सामान्यतः कौन सा रंग उपयोग किया जाता है?", options: ["Red / लाल", "Yellow / पीला", "Green / हरा", "Blue / नीला"], correctAnswerIndex: 1 },
-  { id: "s1_q3", text: "What is the first step to take when noticing a fire in the workshop? / कार्यशाला में आग लगने पर सबसे पहले क्या करना चाहिए?", options: ["Attempt to extinguish it immediately / तुरंत बुझाने का प्रयास करना", "Raise the alarm and inform others / अलार्म बजाना और दूसरों को सूचित करना", "Evacuate silently / चुपचाप निकल जाना", "Ignore it if small / छोटी होने पर अनदेखा करना"], correctAnswerIndex: 1 },
-  { id: "s1_q4", text: "What is the primary goal of the 5S methodology? / 5S पद्धति का मुख्य उद्देश्य क्या है?", options: ["Cleaning only / केवल सफाई करना", "Organizing the workplace efficiently / कार्यस्थल को कुशलतापूर्वक व्यवस्थित करना", "Hiring more workers / अधिक कर्मचारियों की भर्ती करना", "Reducing workers' salaries / कर्मचारियों का वेतन कम करना"], correctAnswerIndex: 1 },
-  { id: "s1_q5", text: "Which extinguisher should be used for a small electrical fire? / छोटी विद्युत आग के लिए कौन सा अग्निशामक उपयोग करना चाहिए?", options: ["Water / पानी", "Foam / फोम", "CO2 / सीओ२", "Sand / रेत"], correctAnswerIndex: 2 }
-];
-
-const SET_2_CUSTOMER: Question[] = [
-  { id: "s2_q1", text: "What is the first step in product design? / उत्पाद डिज़ाइन में पहला चरण क्या है?", options: ["Manufacturing / निर्माण", "Identifying customer needs / ग्राहक आवश्यकताओं की पहचान करना", "Advertising / विज्ञापन करना", "Selling / बिक्री करना"], correctAnswerIndex: 1 },
-  { id: "s2_q2", text: "What does CRM stand for? / CRM का पूर्ण रूप क्या है?", options: ["Customer Required Machine / ग्राहक आवश्यक मशीन", "Customer Relationship Management / ग्राहक संबंध प्रबंधन", "Certified Robotic Mechanism / प्रमाणित रोबोटिक तंत्र", "Creative Resource Management / रचनात्मक संसाधन प्रबंधन"], correctAnswerIndex: 1 },
-  { id: "s2_q3", text: "Why is understanding customer needs important? / ग्राहक आवश्यकताओं को समझना क्यों महत्वपूर्ण है?", options: ["To reduce costs / लागत कम करने के लिए", "To develop suitable products / उपयुक्त उत्पाद विकसित करने के लिए", "To increase office staff / कार्यालय कर्मचारियों की संख्या बढ़ाने के लिए", "To decorate the office / कार्यालय सजाने के लिए"], correctAnswerIndex: 1 }
-];
-
-const SET_3_DRAWING: Question[] = [
-  { id: "s3_q1", text: "What is the primary purpose of an engineering drawing? / इंजीनियरिंग ड्राइंग का मुख्य उद्देश्य क्या होता है?", options: ["Decoration / सजावट", "Communication of technical details / तकनीकी विवरणों का संप्रेषण", "Legal record / कानूनी रिकॉर्ड", "Marketing / विपणन"], correctAnswerIndex: 1 },
-  { id: "s3_q2", text: "What do the letters \"GD&T\" stand for? / \"GD&T\" का पूरा रूप क्या है?", options: ["General Design & Tolerance / सामान्य डिजाइन और सहिष्णुता", "Geometrical Dimensioning & Tolerancing / ज्यामितीय आयामीकरण और सहिष्णुता", "Graph Drawing & Testing / ग्राफ ड्राइंग और परीक्षण", "Global Design & Technology / वैश्विक डिजाइन और प्रौद्योगिकी"], correctAnswerIndex: 1 },
-  { id: "s3_q3", text: "In GD&T, which symbol represents circularity? / GD&T में वृत्ताकारता (Circularity) का प्रतीक क्या है?", options: ["Ⓜ", "⌀", "○", "∆"], correctAnswerIndex: 2 }
-];
 
 const App = () => {
   const [view, setView] = useState<AppView>(AppView.SPLASH);
@@ -39,7 +19,7 @@ const App = () => {
   const [activeModule, setActiveModule] = useState<Module | null>(null);
   const [activeBlock, setActiveBlock] = useState<Block | null>(null);
   const [activeQuizSet, setActiveQuizSet] = useState<QuizSet | null>(null);
-  const [result, setResult] = useState<QuizResult | null>(null);
+  const [result, setResult] = useState<any | null>(null);
 
   useEffect(() => {
     if (view === AppView.SPLASH) {
@@ -49,36 +29,44 @@ const App = () => {
   }, [view]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('robotic_quiz_v8_db');
+    // Version bumped to v20 for LO9 update
+    const saved = localStorage.getItem('robotic_quiz_v20_db');
     if (saved) {
-      setSubjects(JSON.parse(saved));
-      return;
+      const parsed = JSON.parse(saved);
+      if (parsed.length > 0) {
+        setSubjects(parsed);
+        return;
+      }
     }
 
-    // --- Standard IRDMT Block Titles (23 Blocks) ---
-    const irdmtBlockTitles = [
-      "Safe working practices & Housekeeping",
-      "Customer needs & Product specifications",
-      "Industrial engineering drawing", "Industrial Robots & Configuration", "Robotic Cell Components", "Installation check of Robot",
-      "Robot Power-on & Cell Health", "Teach Pendant functions", "Industrial Robot simulation software", "Robotic Coordinate systems",
-      "Jogging using virtual programming", "Add-on assembly for applications", "Application-based robotic cells", "Welding robot system & PLC",
-      "Interfacing Grippers in Robot", "Importing & Exporting robotic programs", "Program Reading & Execution", "Operation of Industrial Robot",
-      "Safety procedure for Programmers", "Need of robotic programming Simulation", "Program creation via Simulation", "Remote monitoring & Connectivity",
-      "Preventive Maintenance & Troubleshooting"
-    ];
+    const irdmtBlocks: Block[] = IRDMT_FULL_DATA.map((loData, i) => {
+      const q1 = loData.questions.slice(0, 25);
+      const q2 = loData.questions.slice(25, 50);
+      
+      return {
+        id: `irdmt-b-${i+1}`,
+        title: loData.title,
+        sets: [
+          {
+            id: `irdmt-s-${i+1}-1`,
+            title: "Practice Set 1",
+            description: `Core concepts for ${loData.title}`,
+            questions: q1,
+            createdAt: Date.now()
+          },
+          ...(q2.length > 0 ? [{
+            id: `irdmt-s-${i+1}-2`,
+            title: "Practice Set 2",
+            description: `Advanced applications for ${loData.title}`,
+            questions: q2,
+            createdAt: Date.now()
+          }] : [])
+        ]
+      };
+    });
 
-    const irdmtBlocks: Block[] = irdmtBlockTitles.map((title, i) => ({
-      id: `irdmt-b-${i+1}`, title,
-      sets: [{
-          id: `irdmt-s-${i+1}-1`, title: "Set 1", description: `Diagnostic for ${title}`,
-          questions: i === 0 ? SET_1_SAFETY : i === 1 ? SET_2_CUSTOMER : i === 2 ? SET_3_DRAWING : [],
-          createdAt: Date.now(), isPlaceholder: i > 2
-      }]
-    }));
-
-    // --- Standard Employability Skill Block Titles & Questions ---
     const esBlocks: Block[] = EMPLOYABILITY_SKILLS_DATA.map((blockData, i) => {
-      const sets = (blockData.sets || [{ title: 'Set 1', questions: blockData.questions || [] }]).map((setData, j) => ({
+      const sets = (blockData.sets || [{ title: 'Practice Set 1', questions: blockData.questions || [] }]).map((setData, j) => ({
         id: `es-s-${i+1}-${j+1}`,
         title: setData.title,
         description: `Practice for ${blockData.title}`,
@@ -95,8 +83,8 @@ const App = () => {
     });
 
     const initialSubjects: Subject[] = [
-      { id: 'irdmt', name: 'IRDMT', icon: '🤖', modules: [{ id: 'm1', name: 'Learning Outcome', blocks: irdmtBlocks }] },
-      { id: 'es', name: 'Employability Skill', icon: '📚', modules: [{ id: 'm2', name: 'Learning Outcome', blocks: esBlocks }] }
+      { id: 'irdmt', name: 'Industrial Robotic (IRDMT)', icon: '🤖', modules: [{ id: 'm1', name: 'Learning Outcomes', blocks: irdmtBlocks }] },
+      { id: 'es', name: 'Employability Skills', icon: '📚', modules: [{ id: 'm2', name: 'Syllabus Units', blocks: esBlocks }] }
     ];
 
     persistData(initialSubjects);
@@ -104,7 +92,7 @@ const App = () => {
 
   const persistData = (data: Subject[]) => {
     setSubjects(data);
-    localStorage.setItem('robotic_quiz_v8_db', JSON.stringify(data));
+    localStorage.setItem('robotic_quiz_v20_db', JSON.stringify(data));
   };
 
   const resetToHome = () => {
@@ -187,13 +175,13 @@ const App = () => {
             <span className="text-5xl">🤖</span>
           </div>
           <div className="space-y-4">
-            <h1 className="text-4xl font-extrabold text-white tracking-tight uppercase">ITI CBT EXAM MCQ</h1>
-            <div className="h-1.5 w-48 bg-slate-800 mx-auto rounded-full overflow-hidden">
+            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase neon-text">ROBOTIC QUIZ</h1>
+            <p className="text-robot-primary font-black text-[10px] md:text-xs uppercase tracking-[0.5em]">System Initializing...</p>
+            <div className="h-1.5 w-64 bg-slate-800 mx-auto rounded-full overflow-hidden mt-6">
               <div className="h-full bg-robot-primary animate-[loading_2s_ease-in-out_forwards]"></div>
             </div>
           </div>
         </div>
-        <style>{`@keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }`}</style>
       </div>
     );
   }
@@ -204,19 +192,24 @@ const App = () => {
         {view === AppView.SUBJECT_SELECT && (
           <div className="space-y-12 animate-fadeIn py-10">
             <div className="text-center space-y-4 px-4">
-              <h2 className="text-4xl font-black text-white uppercase tracking-tight">Select <span className="text-robot-primary">Trade</span></h2>
-              <p className="text-slate-400 text-lg">Choose your trade to begin CBT exam practice.</p>
+              <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight">Mission <span className="text-robot-primary">Control</span></h2>
+              <p className="text-slate-400 text-base md:text-lg font-medium">Initialize trade protocols for precision evaluation.</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto px-6">
               {subjects.map(s => (
                 <button 
                   key={s.id}
                   onClick={() => { setActiveSubject(s); setView(AppView.MODULE_SELECT); }}
-                  className="group relative bg-robot-card border border-white/5 rounded-[2.5rem] p-12 text-center transition-all hover:scale-[1.03] hover:border-robot-primary/50 shadow-2xl active:scale-95"
+                  className="group relative bg-robot-card border border-white/5 rounded-[3rem] p-10 md:p-12 text-center transition-all hover:scale-[1.03] hover:border-robot-primary/50 shadow-2xl active:scale-95 overflow-hidden"
                 >
-                  <div className="text-8xl mb-8 group-hover:scale-110 transition-transform duration-300">{s.icon}</div>
-                  <h3 className="text-3xl font-black text-white mb-3">{s.name}</h3>
-                  <div className="bg-robot-primary/10 text-robot-primary py-1.5 px-4 rounded-full inline-block text-[10px] font-black uppercase tracking-widest">Ready for Practice</div>
+                  <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <span className="text-8xl md:text-9xl">{s.icon}</span>
+                  </div>
+                  <div className="relative z-10">
+                    <div className="text-6xl md:text-8xl mb-8 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-[0_0_10px_rgba(0,243,255,0.3)]">{s.icon}</div>
+                    <h3 className="text-2xl md:text-3xl font-black text-white mb-3 uppercase tracking-tight">{s.name}</h3>
+                    <div className="bg-robot-primary/10 text-robot-primary py-1.5 px-6 rounded-full inline-block text-[10px] font-black uppercase tracking-widest border border-robot-primary/20">Operational</div>
+                  </div>
                 </button>
               ))}
             </div>
@@ -226,24 +219,28 @@ const App = () => {
         {view === AppView.MODULE_SELECT && activeSubject && (
           <div className="space-y-12 animate-fadeIn max-w-4xl mx-auto px-6">
             <div className="flex items-center space-x-6">
-              <button onClick={() => setView(AppView.SUBJECT_SELECT)} className="p-3 bg-white/5 rounded-2xl hover:bg-white/10 text-slate-400 transition-all">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path></svg>
+              <button 
+                onClick={() => setView(AppView.SUBJECT_SELECT)} 
+                className="flex items-center space-x-3 px-4 py-3 bg-white/5 rounded-2xl hover:bg-robot-primary/10 text-slate-400 hover:text-robot-primary transition-all active:scale-90 border border-white/5 hover:border-robot-primary/30"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg>
+                <span className="text-[11px] font-black uppercase tracking-[0.2em]">Return</span>
               </button>
-              <h2 className="text-3xl font-bold text-white uppercase">{activeSubject.name} <span className="text-slate-600 font-light mx-2">/</span> Modules</h2>
+              <h2 className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">{activeSubject.name} <span className="text-slate-700 font-light mx-2">/</span> Modules</h2>
             </div>
             <div className="grid grid-cols-1 gap-6">
               {activeSubject.modules.map(m => (
                 <button 
                   key={m.id}
                   onClick={() => { setActiveModule(m); setView(AppView.SET_SELECT); }}
-                  className="bg-robot-card border border-robot-secondary/20 p-8 rounded-[2rem] text-left hover:border-robot-primary transition-all group flex justify-between items-center shadow-xl active:scale-[0.98]"
+                  className="bg-robot-card border border-robot-secondary/20 p-8 md:p-10 rounded-[2rem] text-left hover:border-robot-primary transition-all group flex justify-between items-center shadow-2xl active:scale-[0.98]"
                 >
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{m.name}</h3>
-                    <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Total Units: {m.blocks.length}</p>
+                    <h3 className="text-xl md:text-2xl font-black text-white mb-2 uppercase tracking-tight">{m.name}</h3>
+                    <p className="text-robot-primary font-black uppercase tracking-[0.2em] text-[10px] md:text-xs">Accessing {m.blocks.length} Practice Units</p>
                   </div>
-                  <div className="w-14 h-14 rounded-2xl bg-robot-primary/10 flex items-center justify-center text-robot-primary group-hover:bg-robot-primary group-hover:text-robot-dark transition-all shadow-lg">
-                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7"></path></svg>
+                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-robot-primary/10 flex items-center justify-center text-robot-primary group-hover:bg-robot-primary group-hover:text-robot-dark transition-all shadow-xl border border-robot-primary/10">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7"></path></svg>
                   </div>
                 </button>
               ))}
@@ -252,29 +249,48 @@ const App = () => {
         )}
 
         {view === AppView.SET_SELECT && activeModule && (
-          <div className="space-y-10 animate-fadeIn max-w-6xl mx-auto px-6">
-            <div className="flex items-center space-x-6">
-              <button onClick={() => setView(AppView.MODULE_SELECT)} className="p-3 bg-white/5 rounded-2xl hover:bg-white/10 text-slate-400 transition-all">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path></svg>
+          <div className="space-y-10 animate-fadeIn max-w-6xl mx-auto px-6 pb-20">
+            <div className="flex items-center justify-between border-b border-white/5 pb-6">
+              <div className="flex flex-col space-y-4">
+                <div className="flex items-center space-x-3">
+                  <span className="bg-robot-primary/20 text-robot-primary px-3 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border border-robot-primary/10">{activeSubject?.name}</span>
+                  <span className="text-slate-700 text-xs">/</span>
+                  <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">{activeModule.name}</span>
+                </div>
+                <div className="flex items-center space-x-6">
+                  <button 
+                    onClick={() => setView(AppView.MODULE_SELECT)} 
+                    className="flex items-center space-x-2 px-3 py-2 bg-white/5 rounded-xl hover:bg-robot-primary/10 text-slate-400 hover:text-robot-primary transition-all active:scale-90 border border-white/5"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Return</span>
+                  </button>
+                  <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-tight">Syllabus <span className="text-robot-primary">Units</span></h2>
+                </div>
+              </div>
+              <button onClick={resetToHome} className="p-3 bg-white/5 rounded-xl hover:text-robot-primary transition-colors">
+                <span className="text-[11px] font-bold uppercase tracking-widest">Home</span>
               </button>
-              <h2 className="text-3xl font-bold text-white uppercase">Syllabus Blocks</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-24">
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {activeModule.blocks.map((block, idx) => (
                 <button 
                   key={block.id}
                   onClick={() => { setActiveBlock(block); setView(AppView.SUB_SET_SELECT); }}
-                  className="relative p-8 rounded-[2rem] border bg-robot-card border-robot-secondary/30 hover:border-robot-primary transition-all text-left flex flex-col space-y-4 group shadow-xl hover:-translate-y-2 active:scale-95"
+                  className="relative p-5 md:p-6 rounded-[1.5rem] border bg-robot-card border-robot-secondary/20 hover:border-robot-primary transition-all text-left flex flex-col space-y-3 group shadow-xl hover:-translate-y-1 active:scale-[0.97]"
                 >
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Block_{idx + 1}</span>
-                    <div className="flex space-x-1.5">
+                    <span className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em]">LO_{idx + 1 < 10 ? `0${idx+1}` : idx+1}</span>
+                    <div className="flex space-x-1">
                       {block.sets.map((s, si) => (
-                        <div key={si} className={`w-2.5 h-2.5 rounded-full ${s.isPlaceholder ? 'bg-slate-800' : 'bg-robot-primary shadow-[0_0_8px_rgba(0,243,255,0.4)]'}`}></div>
+                        <div key={si} className={`w-2 h-2 rounded-full ${s.questions.length === 0 ? 'bg-slate-800' : 'bg-robot-primary'}`}></div>
                       ))}
                     </div>
                   </div>
-                  <div className="text-xl font-bold text-white line-clamp-3 leading-snug h-24">{block.title}</div>
+                  <div className="text-xs md:text-sm font-bold text-slate-200 line-clamp-3 leading-snug uppercase tracking-tight h-14 group-hover:text-robot-primary transition-colors">
+                    {block.title}
+                  </div>
                 </button>
               ))}
             </div>
@@ -282,36 +298,52 @@ const App = () => {
         )}
 
         {view === AppView.SUB_SET_SELECT && activeBlock && (
-          <div className="space-y-10 animate-fadeIn max-w-4xl mx-auto px-6">
-            <div className="flex items-center space-x-6">
-              <button onClick={() => setView(AppView.SET_SELECT)} className="p-3 bg-white/5 rounded-2xl hover:bg-white/10 text-slate-400 transition-all">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7"></path></svg>
-              </button>
-              <h2 className="text-2xl font-bold text-white uppercase">Practice Sets</h2>
-            </div>
-            <div className="bg-robot-card border border-robot-secondary/20 p-10 rounded-[3rem] shadow-2xl">
-              <h3 className="text-xs font-black text-robot-primary mb-3 uppercase tracking-widest">Selected Unit:</h3>
-              <p className="text-2xl font-bold text-white leading-relaxed">{activeBlock.title}</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 pb-20">
-              {activeBlock.sets.map((set) => (
+          <div className="space-y-10 animate-fadeIn max-w-4xl mx-auto px-6 pb-20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-6">
                 <button 
-                  key={set.id}
-                  disabled={set.isPlaceholder}
-                  onClick={() => { setActiveQuizSet(set); setView(AppView.QUIZ); }}
-                  className={`relative p-12 rounded-[3rem] border transition-all text-center flex flex-col items-center justify-center space-y-6 group overflow-hidden ${
-                    set.isPlaceholder 
-                    ? 'bg-slate-900/40 border-white/5 opacity-50 cursor-not-allowed' 
-                    : 'bg-robot-card border-robot-secondary/30 hover:border-robot-primary hover:scale-[1.05] shadow-2xl active:scale-95'
-                  }`}
+                  onClick={() => setView(AppView.SET_SELECT)} 
+                  className="flex items-center space-x-3 px-4 py-3 bg-white/5 rounded-2xl hover:bg-robot-primary/10 text-slate-400 hover:text-robot-primary transition-all active:scale-90 border border-white/5 hover:border-robot-primary/30"
                 >
-                  <div className="text-7xl group-hover:scale-110 transition-transform">{set.isPlaceholder ? '🔒' : '📝'}</div>
-                  <div className="text-3xl font-black text-white">{set.title}</div>
-                  {!set.isPlaceholder && (
-                    <div className="bg-robot-primary text-robot-dark px-6 py-2 rounded-2xl font-black uppercase text-sm shadow-lg group-hover:bg-white transition-colors">Start Exam</div>
-                  )}
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M15 19l-7-7 7-7"></path></svg>
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em]">Return</span>
                 </button>
-              ))}
+                <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-widest">Select <span className="text-robot-primary">Set</span></h2>
+              </div>
+              <button onClick={resetToHome} className="p-3 bg-white/5 rounded-xl hover:text-robot-primary transition-colors">
+                <span className="text-[11px] font-bold uppercase tracking-widest">Home</span>
+              </button>
+            </div>
+            <div className="bg-robot-card border border-robot-secondary/20 p-8 md:p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-robot-primary/5 rounded-full -translate-y-16 translate-x-16"></div>
+              <h3 className="text-[10px] font-black text-robot-primary mb-3 uppercase tracking-[0.4em]">Syllabus Context:</h3>
+              <p className="text-lg md:text-xl font-bold text-white leading-tight uppercase tracking-tight">{activeBlock.title}</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-10">
+              {activeBlock.sets.map((set) => {
+                const isEmpty = set.questions.length === 0;
+                return (
+                  <button 
+                    key={set.id}
+                    disabled={isEmpty}
+                    onClick={() => { setActiveQuizSet(set); setView(AppView.QUIZ); }}
+                    className={`relative p-10 md:p-12 rounded-[2.5rem] border transition-all text-center flex flex-col items-center justify-center space-y-6 group overflow-hidden shadow-2xl active:scale-95 ${
+                      isEmpty 
+                      ? 'bg-slate-900/40 border-white/5 opacity-40 cursor-not-allowed' 
+                      : 'bg-robot-card border-robot-secondary/30 hover:border-robot-primary hover:bg-robot-primary/5'
+                    }`}
+                  >
+                    <div className="text-6xl md:text-7xl group-hover:scale-110 transition-transform filter drop-shadow-[0_0_15px_rgba(0,243,255,0.4)]">{isEmpty ? '🔒' : '🎯'}</div>
+                    <div className="text-2xl md:text-3xl font-black text-white uppercase tracking-tight">{set.title}</div>
+                    {!isEmpty && (
+                      <div className="space-y-4">
+                        <p className="text-slate-500 font-bold text-[10px] md:text-xs uppercase tracking-widest">{set.questions.length} Precision Tasks</p>
+                        <div className="bg-robot-primary text-robot-dark px-8 py-3 rounded-2xl font-black uppercase text-xs shadow-xl group-hover:bg-white transition-all tracking-widest">Begin Test</div>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -337,19 +369,13 @@ const App = () => {
             onAddBlock={handleAddBlock}
             onDeleteBlock={handleDeleteBlock}
             onDeleteSet={handleDeleteSet}
+            onExit={resetToHome}
           />
         )}
       </div>
     </Layout>
   );
 };
-
-interface QuizResult {
-  score: number;
-  total: number;
-  answers: Record<string, number>;
-  quiz: QuizSet;
-}
 
 const root = createRoot(document.getElementById('root')!);
 root.render(<App />);

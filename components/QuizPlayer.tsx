@@ -11,7 +11,7 @@ interface QuizPlayerProps {
 const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onFinish, onCancel }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
-  const [timeLeft, setTimeLeft] = useState(quiz.questions.length * 30);
+  const [timeLeft, setTimeLeft] = useState(quiz.questions.length * 45); 
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -50,58 +50,67 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onFinish, onCancel }) => 
     const parts = text.split(' / ');
     return (
       <div className="flex flex-col text-left">
-        <span className={`${isOption ? 'text-xl' : 'text-3xl md:text-4xl'} font-bold text-white leading-tight`}>{parts[0]}</span>
+        <span className={`${isOption ? 'text-base md:text-lg' : 'text-xl md:text-2xl lg:text-3xl'} font-bold text-white leading-snug`}>{parts[0]}</span>
         {parts[1] && (
-          <span className={`${isOption ? 'text-lg' : 'text-xl md:text-2xl'} font-medium text-slate-400 mt-2`}>{parts[1]}</span>
+          <span className={`${isOption ? 'text-sm md:text-base' : 'text-lg md:text-xl lg:text-2xl'} font-medium text-slate-400 mt-2`}>{parts[1]}</span>
         )}
       </div>
     );
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-fadeIn pb-20 px-4">
-      <div className="flex justify-between items-center bg-robot-card p-8 rounded-[2rem] border border-robot-secondary/30 shadow-2xl">
-        <div className="space-y-1">
-          <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Question Status</div>
-          <div className="text-2xl font-black text-robot-primary">{currentIndex + 1} / {quiz.questions.length}</div>
-        </div>
-        
-        <div className="flex items-center space-x-8">
-          <div className="text-right">
-            <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">Time Remaining</div>
-            <div className={`text-3xl font-black tabular-nums ${timeLeft < 20 ? 'text-robot-accent animate-pulse' : 'text-robot-primary'}`}>
+    <div className="max-w-4xl mx-auto animate-slide-up space-y-6 pb-20 px-4">
+      <div className="flex justify-between items-center glass-panel p-5 md:p-6 rounded-2xl border-white/5">
+        <div className="flex items-center space-x-4">
+          <div className="bg-robot-primary/10 px-4 py-2 rounded-xl border border-robot-primary/20">
+            <span className="text-[10px] font-black text-robot-primary uppercase tracking-widest">Progress</span>
+            <div className="text-lg md:text-xl font-black text-white">{currentIndex + 1} / {quiz.questions.length}</div>
+          </div>
+          <div className="bg-robot-secondary/10 px-4 py-2 rounded-xl border border-robot-secondary/20">
+             <span className="text-[10px] font-black text-robot-secondary uppercase tracking-widest">Time</span>
+             <div className={`text-lg md:text-xl font-black tabular-nums ${timeLeft < 30 ? 'text-robot-error animate-pulse' : 'text-white'}`}>
               {formatTime(timeLeft)}
             </div>
           </div>
-          <button onClick={onCancel} className="p-3 text-slate-500 hover:text-white transition-colors bg-white/5 rounded-xl">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
         </div>
+        
+        <button 
+          onClick={onCancel}
+          type="button"
+          className="flex items-center space-x-2 md:space-x-3 px-5 md:px-7 py-3 bg-red-500/15 rounded-xl hover:bg-red-500/25 text-red-400 transition-all active:scale-90 border border-red-500/30 shadow-lg shadow-red-500/10 cursor-pointer z-[60]"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>
+          <span className="text-[12px] font-black uppercase tracking-[0.2em]">Exit</span>
+        </button>
       </div>
 
-      <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden shadow-inner">
-        <div className="h-full bg-robot-primary transition-all duration-500" style={{ width: `${((currentIndex + 1) / quiz.questions.length) * 100}%` }}></div>
+      <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+        <div 
+          className="h-full bg-robot-primary shadow-[0_0_10px_rgba(0,243,255,0.5)] transition-all duration-500 ease-out" 
+          style={{ width: `${((currentIndex + 1) / quiz.questions.length) * 100}%` }}
+        />
       </div>
 
-      <div className="bg-robot-card p-10 md:p-16 rounded-[3rem] border border-robot-secondary/30 relative overflow-hidden shadow-2xl">
-        <div className="relative z-10 space-y-12">
-          <div className="mb-8">{renderBilingual(currentQuestion.text)}</div>
+      <div className="glass-panel p-8 md:p-12 rounded-[2rem] border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-robot-primary/5 rounded-full -translate-y-16 translate-x-16 blur-3xl"></div>
+        <div className="relative z-10 space-y-8 md:space-y-10">
+          <div className="min-h-[100px] md:min-h-[120px]">{renderBilingual(currentQuestion.text)}</div>
 
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-4">
             {currentQuestion.options.map((option, idx) => {
               const isSelected = selectedAnswers[currentQuestion.id] === idx;
               return (
                 <button
                   key={idx}
                   onClick={() => handleSelectOption(idx)}
-                  className={`group relative text-left p-8 rounded-3xl border transition-all ${
+                  className={`group relative text-left p-5 md:p-6 rounded-2xl border transition-all ${
                     isSelected
-                    ? 'bg-robot-primary/10 border-robot-primary shadow-xl ring-2 ring-robot-primary/20'
-                    : 'bg-robot-dark/50 border-white/5 hover:border-robot-secondary/50'
+                    ? 'bg-robot-primary/10 border-robot-primary shadow-[0_0_15px_rgba(0,243,255,0.15)] ring-1 ring-robot-primary/20'
+                    : 'bg-black/20 border-white/5 hover:border-robot-secondary/40'
                   }`}
                 >
-                  <div className="flex items-center space-x-6">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl ${
+                  <div className="flex items-center space-x-5 md:space-x-6">
+                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center font-black text-lg md:text-xl transition-all flex-shrink-0 ${
                       isSelected ? 'bg-robot-primary text-robot-dark shadow-lg' : 'bg-white/5 text-slate-500 group-hover:text-white'
                     }`}>{String.fromCharCode(65 + idx)}</div>
                     <div className="flex-1">{renderBilingual(option, true)}</div>
@@ -113,38 +122,26 @@ const QuizPlayer: React.FC<QuizPlayerProps> = ({ quiz, onFinish, onCancel }) => 
         </div>
       </div>
 
-      <div className="flex justify-between items-center px-4">
+      <div className="flex justify-between items-center gap-4">
         <button
           onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
           disabled={currentIndex === 0}
-          className="px-10 py-5 bg-white/5 text-slate-400 rounded-2xl font-bold text-lg uppercase tracking-widest disabled:opacity-0 transition-all hover:bg-white/10"
+          className="flex-1 py-4 bg-white/5 text-slate-500 rounded-2xl font-bold uppercase text-[10px] md:text-xs tracking-[0.2em] disabled:opacity-0 transition-all hover:bg-white/10"
         >
           Previous
         </button>
         
-        <div className="flex space-x-4">
-          <button
-            onClick={() => {
-               if (currentIndex < quiz.questions.length - 1) setCurrentIndex(prev => prev + 1);
-               else handleSubmit();
-            }}
-            className="px-10 py-5 bg-white/5 text-slate-500 rounded-2xl font-bold text-lg uppercase tracking-widest hover:text-white transition-all"
-          >
-            Skip
-          </button>
-          
-          <button
-            onClick={() => currentIndex < quiz.questions.length - 1 ? setCurrentIndex(prev => prev + 1) : handleSubmit()}
-            disabled={selectedAnswers[currentQuestion.id] === undefined}
-            className={`px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-widest transition-all shadow-2xl ${
-              selectedAnswers[currentQuestion.id] === undefined
-              ? 'bg-slate-800 text-slate-600 cursor-not-allowed'
-              : 'bg-gradient-to-r from-robot-primary to-robot-secondary text-white hover:scale-105 shadow-robot-primary/40'
-            }`}
-          >
-            {currentIndex === quiz.questions.length - 1 ? 'Finish' : 'Next'}
-          </button>
-        </div>
+        <button
+          onClick={() => currentIndex < quiz.questions.length - 1 ? setCurrentIndex(prev => prev + 1) : handleSubmit()}
+          disabled={selectedAnswers[currentQuestion.id] === undefined}
+          className={`flex-[2] py-4 rounded-2xl font-black text-xs md:text-sm uppercase tracking-[0.3em] transition-all ${
+            selectedAnswers[currentQuestion.id] === undefined
+            ? 'bg-slate-900 text-slate-700 cursor-not-allowed border border-white/5'
+            : 'bg-gradient-to-r from-robot-primary to-robot-secondary text-white hover:brightness-110 shadow-lg shadow-robot-primary/20'
+          }`}
+        >
+          {currentIndex === quiz.questions.length - 1 ? 'End Mission' : 'Next Step'}
+        </button>
       </div>
     </div>
   );
